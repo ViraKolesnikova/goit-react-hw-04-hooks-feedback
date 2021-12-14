@@ -13,29 +13,36 @@ export default function App() {
 
   const options = {good, neutral, bad};
 
-  const updateFeedback = event => {
-    switch (event.target.textContent) {
+  const updateFeedback = optionName => {
+    switch (optionName) {
       case 'good':
-        addFeedback(setGood);
+        setGood(prevState => prevState + 1);
         break;
       case 'neutral':
-        addFeedback(setNeutral);
+        setNeutral(prevState => prevState + 1);
         break;
       case 'bad':
-        addFeedback(setBad);
+        setBad(prevState => prevState + 1);
         break;
       default:
         return;
     }
   };
 
+  const CountFeedbackPercentage=(total, feedbackType)=>{
+  if (total === 0) {
+    return '0%';
+  }
+  return Math.round((feedbackType / total) * 100) + '%';
+}
+
   const total = good + neutral + bad;
-  const percentage=countPositiveFeedbackPercentage(total, good);
+  const percentage=CountFeedbackPercentage(total, good);
 
   return (
     <>
       <Section title={'Please leave feedback'}>
-        <FeedbackOptions options={options} onLeaveFeedback={updateFeedback} />
+        <FeedbackOptions options={options} onLeaveFeedback={e=>updateFeedback(e.target.textContent)} />
       </Section>
       <Section title={'Statistics'}>
         {total > 0 ? (
@@ -50,17 +57,5 @@ export default function App() {
       </Section>
     </>
   );
-}
-
-
-function addFeedback(callback) {
-  callback(prevState => prevState + 1);
-}
-
-function countPositiveFeedbackPercentage(total, positive) {
-  if (total === 0) {
-    return '0%';
-  }
-  return Math.round((positive / total) * 100) + '%';
 }
 
